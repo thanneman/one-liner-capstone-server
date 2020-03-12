@@ -139,7 +139,7 @@ usersRouter
 
         newJoke.user_id = req.user.id
 
-        JokesService.insertUserGame(
+        JokesService.insertUserJoke(
             req.app.get('db'),
             newJoke
         )
@@ -169,7 +169,7 @@ usersRouter
     .all((req, res, next) => {
         JokesService.getById(
             req.app.get('db'),
-            req.params.game_id
+            req.params.joke_id
         )
             .then(joke => {
                 if (!joke) {
@@ -188,7 +188,7 @@ usersRouter
     .delete((req, res, next) => {
         JokesService.deleteJoke(
             req.app.get('db'),
-            req.params.game_id
+            req.params.joke_id
         )
             .then(() => {
                 res.status(204).end()
