@@ -35,8 +35,8 @@ usersRouter
             .catch(next)
     })
     .post(jsonBodyParser, (req, res, next) => {
-        const { email, password } = req.body
-        for (const field of ['email', 'password'])
+        const { email, username, password } = req.body
+        for (const field of ['email', 'username', 'password'])
             if (!req.body[field])
                 return res.status(400).json({
                     error: `Email or password required`
@@ -58,6 +58,7 @@ usersRouter
                     .then(hashedPassword => {
                         const newUser = {
                             email,
+                            username,
                             password: hashedPassword,
                         }
                         return UsersService.insertUser(
