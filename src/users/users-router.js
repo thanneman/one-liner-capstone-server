@@ -130,7 +130,7 @@ usersRouter
     })
     .post(requireAuth, jsonParser, (req, res, next) => {
         const { question, answer, rating } = req.body
-        const newJoke = { question, answer, rating }
+        const newJoke = { question, answer, rating = 1 }
 
         for (const [key, value] of Object.entries(newJoke))
             if (value == null)
