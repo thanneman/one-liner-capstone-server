@@ -5,5 +5,6 @@ CREATE TABLE jokes (
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE NOT NULL,
   question TEXT NOT NULL,
   answer TEXT NOT NULL,
-  rating INTEGER NOT NULL
+  rating INTEGER NOT NULL,
+  date TIMESTAMP DEFAULT now() NOT NULL,
 );
