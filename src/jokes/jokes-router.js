@@ -25,9 +25,9 @@ jokesRouter
       .catch(next)
   })
   .post(requireAuth, jsonParser, (req, res, next) => {
-    const { question, answer, rating = 0 } = req.body
-    const newJoke = { question, answer }
-
+    const { question, answer, rating } = req.body
+    const newJoke = { question, answer, rating }
+    console.log(newJoke)
     for (const [key, value] of Object.entries(newJoke))
       if (value == null)
         return res.status(400).json({
@@ -35,6 +35,7 @@ jokesRouter
         })
 
     newJoke.user_id = req.user.id
+    newJoke.rating = 1
 
     JokesService.insertUserJoke(
       req.app.get('db'),
@@ -73,6 +74,16 @@ jokesRouter
   })	
   .delete((req, res, next) => {	
     JokesService.deleteJoke(	
+      req.app.get('db'),	
+      req.params.joke_id	
+    )	
+      .then(() => {	
+        res.status(204).end()	
+      })	
+      .catch(next)	
+  })
+  .patch((req, res, next) => {	
+    JokesService.updateRating(	
       req.app.get('db'),	
       req.params.joke_id	
     )	

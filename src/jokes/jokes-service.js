@@ -1,6 +1,9 @@
 const JokesService = {
     getAllJokes(knex) {
-      return knex.select('*').from('jokes')
+      return knex('jokes')
+        .join('users', 'jokes.user_id', 'users.id')
+        .select('users.username', 'jokes.id', 'jokes.question', 'jokes.answer', 'jokes.rating', 'jokes.date')
+        .orderBy('jokes.rating', 'desc')
     },
     insertJoke(knex, newJoke) {
       return knex
@@ -20,6 +23,11 @@ const JokesService = {
         .then(rows => {
         return rows[0]
         })
+    },
+    updateRating(knex, id) {
+      return knex('jokes')
+        .where('id', id)
+        .increment('rating', 1)
     },
     getById(knex, id) {
       return knex

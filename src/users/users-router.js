@@ -151,6 +151,29 @@ usersRouter
             })
             .catch(next)
     })
+    .patch(requireAuth, jsonParser, (req, res, next) => {
+        const { rating } = req.body
+        const voteToUpdate = { rating }
+
+        for (const [key, value] of Object.entries(voteToUpdate))
+            if (value == null)
+                return res.status(400).json({
+                    error: { message: `Missing '${key}' in request body` }
+                })
+
+        voteToUpdate.user_id = req.user.id
+
+        JokesService.insertUserJoke(
+            req.app.get('db'),
+            newJoke
+        )
+            .then(joke => {
+                res
+                    .status(201)
+                    .json(serializeJoke(joke))
+            })
+            .catch(next)
+    })
     .delete((req, res, next) => {
         const { user_id } = req.params;
         UsersService.deleteUser(
