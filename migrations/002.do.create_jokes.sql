@@ -6,5 +6,5 @@ CREATE TABLE jokes (
   question TEXT NOT NULL,
   answer TEXT NOT NULL,
   rating INTEGER NOT NULL,
-  date TIMESTAMP DEFAULT now() NOT NULL,
+  date TIMESTAMP DEFAULT now() NOT NULL
 );
