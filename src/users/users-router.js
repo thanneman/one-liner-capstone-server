@@ -129,8 +129,8 @@ usersRouter
         res.json(res.joke)
     })
     .post(requireAuth, jsonParser, (req, res, next) => {
-        const { question, answer } = req.body
-        const newJoke = { question, answer }
+        const { question, answer, rating } = req.body
+        const newJoke = { question, answer, rating }
 
         for (const [key, value] of Object.entries(newJoke))
             if (value == null)
@@ -139,6 +139,7 @@ usersRouter
                 })
 
         newJoke.user_id = req.user.id
+        newJoke.rating = 1
 
         JokesService.insertUserJoke(
             req.app.get('db'),
