@@ -24,10 +24,15 @@ const JokesService = {
         return rows[0]
         })
     },
-    updateRating(knex, id) {
+    patchUpvote(knex, id) {
       return knex('jokes')
         .where('id', id)
         .increment('rating', 1)
+    },
+    patchDownvote(knex, id) {
+      return knex('jokes')
+        .where('id', id)
+        .decrement('rating', 1)
     },
     getById(knex, id) {
       return knex

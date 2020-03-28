@@ -93,4 +93,64 @@ jokesRouter
       .catch(next)	
   })
 
+  jokesRouter	
+  .route('/upvote/:joke_id')	
+  .all(requireAuth)	
+  /*.all((req, res, next) => {	
+    JokesService.getById(	
+      req.app.get('db'),	
+      req.params.joke_id	
+    )	
+      .then(joke => {	
+        if (!joke) {	
+          return res.status(404).json({	
+            error: { message: `Joke does not exist` }	
+          })	
+        }	
+        res.joke = joke	
+        next()	
+      })	
+      .catch(next)	
+  })	*/
+  .patch((req, res, next) => {	
+    JokesService.patchUpvote(	
+      req.app.get('db'),	
+      req.params.joke_id	
+    )	
+      .then(() => {	
+        res.status(204).end()	
+      })	
+      .catch(next)	
+  })
+
+  jokesRouter	
+  .route('/downvote/:joke_id')	
+  .all(requireAuth)	
+  /*.all((req, res, next) => {	
+    JokesService.getById(	
+      req.app.get('db'),	
+      req.params.joke_id	
+    )	
+      .then(joke => {	
+        if (!joke) {	
+          return res.status(404).json({	
+            error: { message: `Joke does not exist` }	
+          })	
+        }	
+        res.joke = joke	
+        next()	
+      })	
+      .catch(next)	
+  })	*/
+  .patch((req, res, next) => {	
+    JokesService.patchDownvote(	
+      req.app.get('db'),	
+      req.params.joke_id	
+    )	
+      .then(() => {	
+        res.status(204).end()	
+      })	
+      .catch(next)	
+  })
+
 module.exports = jokesRouter
