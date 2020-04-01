@@ -72,6 +72,7 @@ const UsersService = {
             .from('jokes')
             .select('*')
             .where('user_id', id)
+            .orderBy('jokes.rating', 'desc')
     }
 }
 
