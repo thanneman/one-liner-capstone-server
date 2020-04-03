@@ -9,4 +9,4 @@ module.exports = {
     process.env.TEST_DATABASE_URL ||
     'postgresql://travishanneman@localhost/oneliner-test',
   JWT_SECRET: process.env.JWT_SECRET || 'change-this-secret'
-}
+};

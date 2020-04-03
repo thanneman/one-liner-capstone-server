@@ -14,3 +14,7 @@ INSERT INTO jokes (user_id, question, answer, rating) VALUES
 INSERT INTO upvotes (user_id, joke_id, upvoted)
 VALUES
     (11, 39, TRUE);
+
+INSERT INTO downvotes (user_id, joke_id, downvoted)
+VALUES
+    (11, 39, TRUE);
