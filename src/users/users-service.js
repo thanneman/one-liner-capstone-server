@@ -7,11 +7,17 @@ const UsersService = {
   getAllUsers(knex) {
     return knex.select('*').from('users');
   },
-  hasUserWithUserName(db, email) {
+  hasUserWithEmail(db, email) {
     return db('users')
       .where({ email })
       .first()
-      .then(user => !!user);
+      .then((user) => !!user);
+  },
+  hasUserWithUserName(db, username) {
+    return db('users')
+      .where({ username })
+      .first()
+      .then((user) => !!user);
   },
   insertUser(db, newUser) {
     return db
@@ -43,7 +49,7 @@ const UsersService = {
       id: user.id,
       username: xss(user.username),
       email: xss(user.email),
-      date_created: new Date(user.date_created)
+      date_created: new Date(user.date_created),
     };
   },
   serializeJoke(joke) {
@@ -51,21 +57,14 @@ const UsersService = {
       id: joke.id,
       question: xss(joke.question),
       answer: xss(joke.answer),
-      rating: joke.rating
+      rating: joke.rating,
     };
   },
   deleteUser(knex, id) {
-    return knex
-      .from('users')
-      .where({ id })
-      .delete();
+    return knex.from('users').where({ id }).delete();
   },
   getById(knex, id) {
-    return knex
-      .from('users')
-      .select('*')
-      .where('id', id)
-      .first();
+    return knex.from('users').select('*').where('id', id).first();
   },
   getJokesById(knex, id) {
     return knex('jokes')
@@ -74,21 +73,17 @@ const UsersService = {
       .orderBy('rating', 'desc');
   },
   getUpvotesById(knex, id) {
-    return knex('upvotes')
-      .select('joke_id')
-      .where('user_id', id);
+    return knex('upvotes').select('joke_id').where('user_id', id);
   },
   getDownvotesById(knex, id) {
-    return knex('downvotes')
-      .select('joke_id')
-      .where('user_id', id);
+    return knex('downvotes').select('joke_id').where('user_id', id);
   },
   insertUserUpvote(knex, newUpvote) {
     return knex
       .insert(newUpvote)
       .into('upvotes')
       .returning('*')
-      .then(rows => {
+      .then((rows) => {
         return rows[0];
       });
   },
@@ -97,10 +92,10 @@ const UsersService = {
       .insert(newDownvote)
       .into('downvotes')
       .returning('*')
-      .then(rows => {
+      .then((rows) => {
         return rows[0];
       });
-  }
+  },
 };
 
 module.exports = UsersService;

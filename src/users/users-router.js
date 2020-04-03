@@ -9,19 +9,19 @@ const { requireAuth } = require('../middleware/jwt-auth');
 
 const jsonParser = express.json();
 
-const serializeUser = user => ({
+const serializeUser = (user) => ({
   user_id: user.id,
   username: xss(user.username),
   email: xss(user.email),
   password: xss(user.password),
-  date_created: new Date(user.date_created)
+  date_created: new Date(user.date_created),
 });
 
-const serializeJoke = joke => ({
+const serializeJoke = (joke) => ({
   id: joke.id,
   question: xss(joke.question),
   answer: xss(joke.answer),
-  rating: joke.rating
+  rating: joke.rating,
 });
 
 // All users
@@ -29,7 +29,7 @@ usersRouter
   .route('/')
   .get((req, res, next) => {
     UsersService.getAllUsers(req.app.get('db'))
-      .then(users => {
+      .then((users) => {
         res.json(users.map(serializeUser));
       })
       .catch(next);
@@ -39,25 +39,25 @@ usersRouter
     for (const field of ['email', 'username', 'password'])
       if (!req.body[field])
         return res.status(400).json({
-          error: `Email or password required`
+          error: `Email or password required`,
         });
     const passwordError = UsersService.validatePassword(password);
 
     if (passwordError) return res.status(400).json({ error: passwordError });
 
-    UsersService.hasUserWithUserName(req.app.get('db'), email)
-      .then(hasUserWithUserName => {
-        if (hasUserWithUserName)
-          return res.status(400).json({ error: `Username already taken` });
+    UsersService.hasUserWithEmail(req.app.get('db'), email)
+      .then((hasUserWithEmail) => {
+        if (hasUserWithEmail)
+          return res.status(400).json({ error: `Email already taken` });
 
-        return UsersService.hashPassword(password).then(hashedPassword => {
+        return UsersService.hashPassword(password).then((hashedPassword) => {
           const newUser = {
             email,
             username,
-            password: hashedPassword
+            password: hashedPassword,
           };
           return UsersService.insertUser(req.app.get('db'), newUser).then(
-            user => {
+            (user) => {
               res
                 .status(201)
                 .location(path.posix.join(req.originalUrl, `/${user.id}`))
@@ -75,7 +75,7 @@ usersRouter
   .all((req, res, next) => {
     const { user_id } = req.params;
     UsersService.getById(req.app.get('db'), user_id)
-      .then(user => {
+      .then((user) => {
         if (!user) {
           return res
             .status(404)
@@ -97,7 +97,7 @@ usersRouter
   .all((req, res, next) => {
     const { user_id } = req.params;
     UsersService.getJokesById(req.app.get('db'), user_id)
-      .then(joke => {
+      .then((joke) => {
         if (!joke) {
           return res
             .status(404)
@@ -119,13 +119,13 @@ usersRouter
     for (const [key, value] of Object.entries(newJoke))
       if (value == null)
         return res.status(400).json({
-          error: { message: `Missing '${key}' in request body` }
+          error: { message: `Missing '${key}' in request body` },
         });
 
     newJoke.user_id = req.user.id;
 
     JokesService.insertUserJoke(req.app.get('db'), newJoke)
-      .then(joke => {
+      .then((joke) => {
         res.status(201).json(serializeJoke(joke));
       })
       .catch(next);
@@ -138,7 +138,7 @@ usersRouter
   .all((req, res, next) => {
     const { user_id } = req.params;
     UsersService.getUpvotesById(req.app.get('db'), user_id)
-      .then(joke => {
+      .then((joke) => {
         if (!joke) {
           return res
             .status(404)
@@ -164,13 +164,13 @@ usersRouter
     for (const [key, value] of Object.entries(newUpvote))
       if (value == null)
         return res.status(400).json({
-          error: { message: `Missing '${key}' in request body` }
+          error: { message: `Missing '${key}' in request body` },
         });
 
     newUpvote.user_id = req.user.id;
 
     UsersService.insertUserUpvote(req.app.get('db'), newUpvote)
-      .then(upvote => {
+      .then((upvote) => {
         res.status(201).json(upvote);
       })
       .catch(next);
@@ -183,7 +183,7 @@ usersRouter
   .all((req, res, next) => {
     const { user_id } = req.params;
     UsersService.getDownvotesById(req.app.get('db'), user_id)
-      .then(joke => {
+      .then((joke) => {
         if (!joke) {
           return res
             .status(404)
@@ -209,13 +209,13 @@ usersRouter
     for (const [key, value] of Object.entries(newDownvote))
       if (value == null)
         return res.status(400).json({
-          error: { message: `Missing '${key}' in request body` }
+          error: { message: `Missing '${key}' in request body` },
         });
 
     newDownvote.user_id = req.user.id;
 
     UsersService.insertUserDownvote(req.app.get('db'), newDownvote)
-      .then(downvote => {
+      .then((downvote) => {
         res.status(201).json(downvote);
       })
       .catch(next);
